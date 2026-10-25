@@ -44,7 +44,7 @@
   * Viết phương thức `tinh_tong_tien()`: tính tổng tiền theo công thức `(tour.tinh_gia_ve() * so_ve) + tong_tien_dich_vu` dựa trên tính đa hình giá vé.
   * Viết phương thức `to_dict()` để xuất thông tin đơn đặt vé.
 
-#### 4. Nguyễn Hữu Phương Uyên (Nhóm trưởng)
+#### 4. Nguyễn Hữu Phương Uyên
 * **File phụ trách:** `controllers/tour_manager.py` và `utils/file_helper.py`
 * **Chi tiết nhiệm vụ:**
   * Xây dựng module xử lý file `utils/file_helper.py`: dùng cú pháp `with open(...)` an toàn để viết các hàm `luu_json()`, `doc_json()`, `xuat_bao_cao_csv()` và `xuat_lich_trinh_text()`.
