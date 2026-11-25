@@ -7,26 +7,42 @@ Created on Wed Oct 28 15:29:17 2026
 
 import json
 import csv
+import os
 
-def luu_json(duong_dan, du_lieu): # Ghi dữ liệu ra file JSON, trả về True nếu thành công
+
+def luu_json(duong_dan, du_lieu):
+    file_tam = duong_dan + ".tmp"
+
     try:
-        with open(duong_dan, 'w', encoding = 'utf-8') as f:
-            json.dump(du_lieu, f, ensure_ascii=False, indent = 4) # ensure_ascii=False để giữ tiếng Việt, indent=4 để thụt lề đẹp
+        with open(file_tam, 'w', encoding='utf-8') as f:
+            json.dump(du_lieu, f, ensure_ascii=False, indent=4)
+
+        os.replace(file_tam, duong_dan)
         return True
+
     except Exception as e:
-        print("Lỗi khi lưu file: ", e)
+        print("Lỗi khi lưu file:", e)
         return False
+
     
-def doc_json(duong_dan): # Đọc dữ liệu từ file JSON, trả về [] nếu chưa có file hoặc file lỗi
+
+def doc_json(duong_dan, mac_dinh=None):
     try:
         with open(duong_dan, 'r', encoding='utf-8') as f:
             return json.load(f)
+
     except FileNotFoundError:
-        print(f"Chưa có file {duong_dan}, trả về danh sách rỗng.") # Chưa có file thì trả về danh sách rỗng, không để app bị văng
-        return []
+        print(f"Chưa có file {duong_dan}.")
+        return mac_dinh
+
     except json.JSONDecodeError:
-        print(f"File {duong_dan} bị trống hoặc sai định dạng JSON.") # File rỗng hoặc sai cú pháp JSON
-        return []
+        print(f"File {duong_dan} bị trống hoặc sai định dạng JSON.")
+        raise
+
+    except OSError as e:
+        print("Lỗi khi đọc file:", e)
+        raise
+
     
 def xuat_bao_cao_csv(ds_tour, ten_file="data/bao_cao_tours.csv"):
     try:
@@ -72,50 +88,72 @@ def xuat_lich_trinh_text(tour, ten_file="data/lich_trinh_tour.txt"):
         return False
             
     
-# =====================================================================
-# KIỂM THỬ ĐỘC LẬP TẤT CẢ CÁC HÀM
-# =====================================================================
 
 if __name__ == "__main__":
-    print("=== BẮT ĐẦU KIỂM THỬ MODULE FILE_HELPER ===")
+    print("=== BẮT ĐẦU KIỂM THỬ ===")
 
-    # 1. Dữ liệu từ điển để test JSON và CSV
-    tour_mau_dict = [
-        {
-            "ma_tour": "ND01",
-            "ten_tour": "Đà Nẵng - Hội An",
-            "diem_den": "Đà Nẵng",
-            "so_ngay": 3,
-            "ngay_khoi_hanh": "2026-06-15",
-            "gia_co_ban": 3000000,
-            "so_cho_toi_da": 25,
-            "so_cho_da_dat": 2
-        }
-    ]
+    # Dữ liệu tour mẫu
+    tour_mau = {
+        "ma_tour": "ND01",
+        "ten_tour": "Đà Nẵng - Hội An",
+        "diem_den": "Đà Nẵng",
+        "so_ngay": 3,
+        "ngay_khoi_hanh": "2026-12-15",
+        "gia_co_ban": 3000000,
+        "so_cho_toi_da": 25,
+        "so_cho_da_dat": 0
+    }
 
-    # Đọc & Ghi JSON
-    luu_json("test_tour.json", tour_mau_dict)
-    kq_doc = doc_json("test_tour.json")
-    print("1. Đọc JSON:", "Thành công" if len(kq_doc) > 0 else "Thất bại")
+    # 1. Kiểm thử ghi JSON
+    print("\n--- Kiểm thử ghi JSON ---")
+    ket_qua = luu_json("test_data.json", tour_mau)
+    print("Ghi dữ liệu:", ket_qua)
 
-    # Xuất CSV
-    kq_csv = xuat_bao_cao_csv(tour_mau_dict, "test_bao_cao.csv")
-    print("2. Xuất CSV:", "Thành công" if kq_csv else "Thất bại")
+    # 2. Kiểm thử đọc JSON
+    print("\n--- Kiểm thử đọc JSON ---")
+    du_lieu = doc_json("test_data.json", {})
+    print(du_lieu)
 
-    # 2. Tạo một đối tượng mẫu để test xuất TXT
+    # 3. Kiểm thử file không tồn tại
+    print("\n--- Kiểm thử file không tồn tại ---")
+    print(doc_json("file_khong_ton_tai.json", []))
+    print(doc_json("file_khong_ton_tai.json", {}))
+
+    # 4. Kiểm thử file sai định dạng
+    print("\n--- Kiểm thử file sai định dạng ---")
+    with open("test_loi.json", "w", encoding="utf-8") as f:
+        f.write("Du lieu loi")
+
+    try:
+        doc_json("test_loi.json", {})
+    except json.JSONDecodeError:
+        print("Đã xử lý lỗi JSON")
+
+    # 5. Kiểm thử ghi dữ liệu thất bại
+    print("\n--- Kiểm thử ghi dữ liệu thất bại ---")
+    du_lieu_loi = {"ND01", "ND02"}
+    print(luu_json("test_data.json", du_lieu_loi))
+
+    # Đọc lại để kiểm tra dữ liệu cũ
+    print(doc_json("test_data.json", {}))
+
+    # 6. Kiểm thử xuất CSV
+    print("\n--- Kiểm thử xuất CSV ---")
+    print(xuat_bao_cao_csv([tour_mau], "test_bao_cao.csv"))
+
+    # 7. Kiểm thử xuất TXT
+    print("\n--- Kiểm thử xuất TXT ---")
+
     class TourTest:
         def __init__(self):
             self.ma_tour = "ND01"
             self.ten_tour = "Đà Nẵng - Hội An"
             self.diem_den = "Đà Nẵng"
             self.so_ngay = 3
-            self.ngay_khoi_hanh = "2026-06-15"
+            self.ngay_khoi_hanh = "2026-12-15"
             self.gia_co_ban = 3000000
 
-    doi_tuong_tour = TourTest()
+    tour = TourTest()
+    print(xuat_lich_trinh_text(tour, "test_lich_trinh.txt"))
 
-    # Xuất TXT với đối tượng OOP
-    kq_txt = xuat_lich_trinh_text(doi_tuong_tour, "test_lich_trinh.txt")
-    print("3. Xuất TXT:", "Thành công" if kq_txt else "Thất bại")
-
-    print("=== HOÀN TẤT KIỂM THỬ ===")
+    print("\n=== HOÀN TẤT KIỂM THỬ ===")
