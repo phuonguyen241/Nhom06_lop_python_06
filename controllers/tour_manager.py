@@ -10,6 +10,7 @@ sys.path.append("..")
 
 from utils.file_helper import doc_json, luu_json, xuat_bao_cao_csv
 from models.tour import TourNoiDia, TourQuocTe
+from models.customer import KhachHang, DichVu
 from config import DATA_FILE
 
 class QuanLyTour:
@@ -55,8 +56,33 @@ class QuanLyTour:
                     so_cho_da_dat=item.get("so_cho_da_dat", 0)
                 )
             self.ds_tour.append(tour)
+            
+        # Khôi phục dữ liệu khách hàng
+        self.ds_khach_hang = []
+        
+        for item in du_lieu_tho.get("customers", []):
+            khach_hang = KhachHang(
+                ma_kh=item.get("ma_kh"),
+                ho_ten=item.get("ho_ten"),
+                sdt=item.get("sdt"),
+                email=item.get("email")
+            )
+        
+            self.ds_khach_hang.append(khach_hang)
+            
+        # Khôi phục dữ liệu dịch vụ
+        self.ds_dich_vu = []
+    
+        for item in du_lieu_tho.get("services", []):
+            dich_vu = DichVu(
+                ma_dv=item.get("ma_dv"),
+                ten_dv=item.get("ten_dv"),
+                don_gia=item.get("don_gia")
+            )
+    
+            self.ds_dich_vu.append(dich_vu)
 
-    # Lưu dữ liệu tour vào file JSON
+    # Lưu dữ liệu nghiệp vụ vào file JSON
     def luu_du_lieu(self):
         try:
             du_lieu = doc_json(self.file_path, {
@@ -68,6 +94,8 @@ class QuanLyTour:
             })
 
             du_lieu["tours"] = [tour.to_dict() for tour in self.ds_tour]
+            du_lieu["customers"] = [kh.to_dict() for kh in self.ds_khach_hang]
+            du_lieu["services"] = [dv.to_dict() for dv in self.ds_dich_vu]
 
             return luu_json(self.file_path, du_lieu)
 
@@ -220,6 +248,48 @@ class QuanLyTour:
             if tour.ma_tour == ma_tour:
                 return tour
         return None
+    
+    # Tìm khách hàng theo mã
+    def lay_khach_hang_theo_ma(self, ma_kh):
+        for kh in self.ds_khach_hang:
+            if kh.ma_kh == ma_kh:
+                return kh
+        return None
+    
+    # Thêm khách hàng
+    def them_khach_hang(self, khach_hang):
+        if self.lay_khach_hang_theo_ma(khach_hang.ma_kh) is not None:
+            print("Mã khách hàng đã tồn tại!")
+            return False
+    
+        self.ds_khach_hang.append(khach_hang)
+    
+        if self.luu_du_lieu():
+            return True
+        else:
+            self.ds_khach_hang.remove(khach_hang)
+            return False
+        
+    # Tìm dịch vụ theo mã
+    def lay_dich_vu_theo_ma(self, ma_dv):
+        for dv in self.ds_dich_vu:
+            if dv.ma_dv == ma_dv:
+                return dv
+        return None
+    
+    # Thêm dịch vụ
+    def them_dich_vu(self, dich_vu):
+        if self.lay_dich_vu_theo_ma(dich_vu.ma_dv) is not None:
+            print("Mã dịch vụ đã tồn tại!")
+            return False
+    
+        self.ds_dich_vu.append(dich_vu)
+    
+        if self.luu_du_lieu():
+            return True
+        else:
+            self.ds_dich_vu.remove(dich_vu)
+            return False
 
 if __name__ == "__main__":
     # 1. Kiểm thử đọc và lưu dữ liệu
@@ -241,9 +311,25 @@ if __name__ == "__main__":
             }
         ],
         "customers": [
-            {"ma_khach_hang": "KH01"}
+            {
+                "ma_kh": "KH01",
+                "ho_ten": "Nguyen Van An",
+                "sdt": "0912345678",
+                "email": "an@example.com"
+            }
         ],
-        "services": [],
+        "services": [
+            {
+                "ma_dv": "DV01",
+                "ten_dv": "Bảo hiểm du lịch",
+                "don_gia": 150000
+            },
+            {
+                "ma_dv": "DV02",
+                "ten_dv": "Đưa đón sân bay",
+                "don_gia": 300000
+            }
+        ],
         "bookings": [],
         "destinations": []
     }
@@ -251,6 +337,18 @@ if __name__ == "__main__":
     luu_json("test_data.json", du_lieu_mau)
 
     quan_ly = QuanLyTour("test_data.json")
+    
+    # Kiểm thử khôi phục đối tượng khách hàng
+    print("\n--- Kiểm thử tải khách hàng ---")
+    
+    for kh in quan_ly.ds_khach_hang:
+        print(kh.ma_kh, kh.ho_ten, kh.sdt, kh.email)
+        
+    # Kiểm thử khôi phục đối tượng dịch vụ
+    print("\n--- Kiểm thử tải dịch vụ ---")
+
+    for dv in quan_ly.ds_dich_vu:
+        print(dv.ma_dv, dv.ten_dv, dv.don_gia)
 
     print("\n--- Kiểm thử tải dữ liệu ---")
     for tour in quan_ly.ds_tour:
@@ -488,4 +586,69 @@ if __name__ == "__main__":
     print("Thêm tour khi file lỗi:", quan_ly_loi.them_tour(tour_qt))
     print("Danh sách sau khi thêm thất bại:", quan_ly_loi.ds_tour)
     print("Chương trình vẫn hoạt động")
+    
+    
+    # Kiểm thử quản lý khách hàng
+    print("\n=== KIỂM THỬ QUẢN LÝ KHÁCH HÀNG ===")
+    
+    kh_moi = KhachHang(
+        "KH02",
+        "Tran Van Binh",
+        "0987654321",
+        "binh@example.com"
+    )
+    
+    print("Thêm khách hàng:", quan_ly.them_khach_hang(kh_moi))
+    print("Thêm trùng mã:", quan_ly.them_khach_hang(kh_moi))
+    
+    kh = quan_ly.lay_khach_hang_theo_ma("KH02")
+    print("Tìm KH02:", kh.to_dict())
+    
+    print("Tìm KH99:", quan_ly.lay_khach_hang_theo_ma("KH99"))
+    
+    quan_ly.tai_du_lieu()
+    kh = quan_ly.lay_khach_hang_theo_ma("KH02")
+    print("Khách hàng sau khi tải lại:", kh.to_dict())
+    
+    # Kiểm thử quản lý dịch vụ
+    print("\n=== KIỂM THỬ QUẢN LÝ DỊCH VỤ ===")
+    
+    dv_moi = DichVu("DV03", "Dịch vụ ăn uống", 200000)
+    
+    print("Thêm dịch vụ:", quan_ly.them_dich_vu(dv_moi))
+    print("Thêm trùng mã:", quan_ly.them_dich_vu(dv_moi))
+    
+    dv = quan_ly.lay_dich_vu_theo_ma("DV03")
+    print("Tìm DV03:", dv.to_dict())
+    
+    print("Tìm DV99:", quan_ly.lay_dich_vu_theo_ma("DV99"))
+    
+    quan_ly.tai_du_lieu()
+    dv = quan_ly.lay_dich_vu_theo_ma("DV03")
+    print("Dịch vụ sau khi tải lại:", dv.to_dict())
 
+    # Kiểm thử tải dữ liệu khi không có tour
+    print("\n=== KIỂM THỬ KHI KHÔNG CÓ TOUR ===")
+
+    du_lieu = doc_json("test_data.json", {})
+    du_lieu["tours"] = []
+
+    luu_json("test_data.json", du_lieu)
+    quan_ly.tai_du_lieu()
+
+    print("Số lượng tour:", len(quan_ly.ds_tour))
+    print("Số lượng khách hàng:", len(quan_ly.ds_khach_hang))
+    print("Số lượng dịch vụ:", len(quan_ly.ds_dich_vu))
+    
+    # Kiểm thử lỗi lưu khách hàng và dịch vụ
+    print("\n=== KIỂM THỬ LỖI LƯU KHÁCH HÀNG VÀ DỊCH VỤ ===")
+    
+    print("Thêm khách hàng khi file lỗi:",
+          quan_ly_loi.them_khach_hang(kh_moi))
+    
+    print("Danh sách khách hàng:", quan_ly_loi.ds_khach_hang)
+    
+    print("Thêm dịch vụ khi file lỗi:",
+          quan_ly_loi.them_dich_vu(dv_moi))
+    
+    print("Danh sách dịch vụ:", quan_ly_loi.ds_dich_vu)
