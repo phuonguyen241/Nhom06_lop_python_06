@@ -510,14 +510,7 @@ Ví dụ: Tour có 20 chỗ, đã đặt 15 chỗ thì tỷ lệ lấp đầy l�
   * Trình bày cách xử lý lỗi khi đọc và ghi file.
   * Phối hợp với thành viên phụ trách tài khoản để mô tả chính xác cấu trúc `users.json`.
 
----
 
-### 3. Nhiệm vụ chung của các thành viên
-
-* Thống nhất cấu trúc dữ liệu, tên thuộc tính, phương thức và các hằng số dùng chung.
-* Phối hợp liên kết các module nghiệp vụ, kiểm thử bước đầu và sửa lỗi trong phần mã nguồn được phân công.
-* Cập nhật mã nguồn lên GitHub và gửi kết quả kiểm thử cho thành viên phụ trách tổng hợp.
-* Hoàn thành nội dung báo cáo tiến độ tuần 10 theo phân công.
 
 
 
