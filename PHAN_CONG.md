@@ -57,13 +57,11 @@
 
 
 
----
-
 # BẢNG PHÂN CÔNG NHIỆM VỤ GIAI ĐOẠN 2
 
 * **Học phần:** Lập trình Python
 * **Đề tài 19:** Hệ thống quản lý tour và lịch trình du lịch
-* **Giai đoạn thực hiện:** Giai đoạn 2 – Hoàn thiện chức năng nghiệp vụ, lưu trữ dữ liệu JSON, xử lý ngoại lệ, tích hợp mã nguồn, kiểm thử và viết báo cáo tiến độ tuần 10.
+* **Giai đoạn thực hiện:** Giai đoạn 2 – Hoàn thiện chức năng nghiệp vụ, lưu trữ dữ liệu JSON, xử lý ngoại lệ, liên kết các module nghiệp vụ, kiểm thử bước đầu và viết báo cáo tiến độ tuần 10.
 
 ---
 
@@ -72,9 +70,10 @@
 | STT | Họ và tên | File phụ trách | Nhiệm vụ chính | Tỷ lệ đóng góp dự kiến |
 |:---:|:---|:---|:---|:---:|
 | 1 | **Nguyễn Thị Phương Uyên** | `models/tour.py`<br>`utils/api_helper.py` | Hoàn thiện lớp Tour, quản lý lịch trình nhiều ngày, Crawl/API và sơ đồ lớp | 25% |
-| 2 | **Trương Lý Bảo Ngân** | `models/customer.py`<br>`models/user.py` | Hoàn thiện khách hàng, dịch vụ, tài khoản, phân quyền và phân tích yêu cầu hệ thống | 25% |
-| 3 | **Đỗ Yến Nhi** | `models/booking.py` | Hoàn thiện lịch trình, nghiệp vụ đặt tour, hủy tour, tính tổng chi phí, phác thảo giao diện và tổng hợp kiểm thử | 25% |
-| 4 | **Nguyễn Hữu Phương Uyên** | `controllers/tour_manager.py`<br>`utils/file_helper.py`<br>`config.py`<br>`main.py` | Hoàn thiện quản lý tour, phiếu đặt tour, thống kê, lưu trữ JSON và tích hợp chương trình | 25% |
+| 2 | **Trương Lý Bảo Ngân** | `models/customer.py`<br>`models/user.py` | Hoàn thiện các lớp khách hàng, dịch vụ, tài khoản, phân quyền và phân tích yêu cầu hệ thống | 25% |
+| 3 | **Đỗ Yến Nhi** | `models/booking.py` | Hoàn thiện lịch trình ngày, nghiệp vụ đặt tour, hủy tour, tính tổng chi phí, phác thảo giao diện và tổng hợp kiểm thử bước đầu | 25% |
+| 4 | **Nguyễn Hữu Phương Uyên** | `controllers/tour_manager.py`<br>`utils/file_helper.py`<br>`config.py` | Hoàn thiện lớp quản lý nghiệp vụ, quản lý tour, khách hàng, dịch vụ và phiếu đặt, thống kê, lưu trữ JSON, xử lý file và liên kết các module nghiệp vụ | 25% |
+| | **Tổng cộng** | | | **100%** |
 
 ---
 
@@ -141,14 +140,15 @@ Ví dụ: Nhập từ khóa "Đà Lạt", chương trình lấy thông tin các 
   * Vẽ Flowchart cho các thao tác thêm, sửa và xóa lịch trình.
   * Đưa ra ví dụ minh họa lịch trình của một tour du lịch.
 
+* **Sơ đồ lớp (Class Diagram):**
+  * Thể hiện các lớp, thuộc tính, phương thức và mối quan hệ theo mã nguồn nghiệp vụ.
+
 * **Mục 2.5. Phương pháp Crawl dữ liệu hoặc sử dụng API:**
   * Giới thiệu website hoặc API được lựa chọn.
   * Trình bày thư viện và phương pháp thu thập dữ liệu.
   * Mô tả cách xử lý và lưu trữ dữ liệu vào JSON.
   * Ghi rõ nguồn dữ liệu được sử dụng.
   * Trình bày theo tiến độ thực tế.
-
-
 
 ---
 
@@ -168,7 +168,7 @@ Ví dụ: Nhập từ khóa "Đà Lạt", chương trình lấy thông tin các 
 * Bổ sung kiểm tra mã dịch vụ, tên dịch vụ không được bỏ trống và đơn giá phải là số không âm.
 * Sử dụng ngoại lệ `ValueError` khi thông tin khách hàng hoặc dịch vụ không hợp lệ.
 * Kiểm tra lại phương thức `to_dict()` của hai lớp để đảm bảo lưu đầy đủ thông tin vào JSON.
-* Thống nhất với thành viên phụ trách `booking.py` về cách tính phí dịch vụ. Để đơn giản, đề xuất tất cả dịch vụ bổ sung đều tính theo người.
+* Thống nhất với thành viên phụ trách `booking.py` về cách tính phí dịch vụ. Các dịch vụ bổ sung được tính theo người.
 
 **b. Xây dựng lớp TaiKhoan**
 
@@ -223,7 +223,7 @@ Phân chia chức năng theo hai vai trò:
 * Chuẩn bị tài khoản Admin mẫu để kiểm thử.
 * Liên kết tài khoản User với mã khách hàng để xác định phiếu đặt tour thuộc về người dùng nào.
 * Phối hợp với thành viên phụ trách `tour_manager.py` để thống nhất cách tạo hoặc liên kết thông tin khách hàng khi đăng ký tài khoản.
-* Phối hợp với thành viên phụ trách `main.py` để kiểm tra quyền và quyền sở hữu phiếu đặt trước khi thực hiện chức năng.
+* Xây dựng và kiểm thử cơ chế kiểm tra quyền và quyền sở hữu phiếu đặt.
 
 * **Nhiệm vụ kiểm thử:**
   * Kiểm thử số điện thoại và email hợp lệ, không hợp lệ.
@@ -240,7 +240,7 @@ Phân chia chức năng theo hai vai trò:
   * Giới thiệu tên đề tài, mục tiêu, phạm vi và đối tượng sử dụng.
   * Liệt kê và mô tả ngắn gọn các chức năng của hệ thống.
   * Xác định chức năng của Admin và User.
-  * Xây dựng Use Case Diagram minh họa các chức năng dự kiến.
+  * Xây dựng Use Case Diagram minh họa các chức năng của hệ thống.
 
 * **Mục 2.6. Chức năng quản trị ứng dụng:**
   * Mô tả chức năng đăng ký tài khoản, đăng nhập, đăng xuất và đổi mật khẩu.
@@ -248,7 +248,6 @@ Phân chia chức năng theo hai vai trò:
   * Vẽ Flowchart cho các chức năng quản trị đã xây dựng.
   * Mô tả cách kiểm tra thông tin tài khoản và lưu trữ trong file `users.json`.
   * Trình bày theo tiến độ thực tế.
-
 
 ---
 
@@ -261,7 +260,8 @@ Phân chia chức năng theo hai vai trò:
 **a. Hoàn thiện lớp LichTrinhNgay**
 
 * Kiểm tra số thứ tự ngày phải là số nguyên dương.
-* Kiểm tra tiêu đề hoạt động và nội dung lịch trình không được bỏ trống.
+* Kiểm tra tiêu đề hoạt động không được bỏ trống.
+* Kiểm tra nội dung hoạt động của từng buổi phải đúng kiểu dữ liệu và không được bỏ trống toàn bộ hoạt động trong ngày.
 * Đảm bảo lưu đầy đủ thông tin hoạt động theo từng buổi sáng, chiều và tối dựa trên các thuộc tính đã xây dựng.
 * Kiểm tra lại phương thức `to_dict()` để chuyển đầy đủ thông tin lịch trình thành Dictionary.
 * Phối hợp với thành viên phụ trách `tour.py` để liên kết các đối tượng `LichTrinhNgay` với tour.
@@ -300,7 +300,7 @@ Ví dụ: Tour đang còn 2 chỗ, khách hủy phiếu đã đặt 3 vé thì t
   `tong_tien = (tour.tinh_gia_ve() * so_ve) + tong_tien_dich_vu`
 
 * Sử dụng vòng lặp để tính tổng đơn giá các dịch vụ mà khách hàng lựa chọn.
-* Nếu thống nhất dịch vụ tính theo người thì tổng tiền dịch vụ bằng tổng đơn giá các dịch vụ nhân với số lượng vé.
+* Tổng tiền dịch vụ bằng tổng đơn giá các dịch vụ nhân với số lượng vé.
 * Sử dụng phương thức `tinh_gia_ve()` để áp dụng đúng tính đa hình của tour nội địa và tour quốc tế.
 * Kiểm tra trường hợp khách hàng không lựa chọn dịch vụ bổ sung.
 * Lưu tổng tiền tại thời điểm xác nhận để không bị thay đổi khi giá tour được cập nhật sau đó.
@@ -309,20 +309,21 @@ Ví dụ: Tour đang còn 2 chỗ, khách hủy phiếu đã đặt 3 vé thì t
 
 Ví dụ: Giá tour 2.000.000 đồng/người, dịch vụ bổ sung 300.000 đồng/người và khách đặt 3 vé thì tổng tiền là 6.900.000 đồng.
 
-**e. Phác thảo giao diện dự kiến**
+**e. Phác thảo giao diện**
 
 * Phác thảo bố cục các màn hình đăng nhập, quản lý tour, lịch trình, đặt tour, quản lý phiếu đặt và thống kê.
 * Thể hiện vị trí các ô nhập thông tin, nút chức năng và khu vực hiển thị dữ liệu.
+* Phối hợp với các thành viên để thống nhất bố cục giao diện.
 * Có thể sử dụng Canva, Figma hoặc vẽ trên giấy, không yêu cầu thiết kế quá chi tiết.
-* Chưa lập trình giao diện Tkinter trong giai đoạn này.
 
 * **Nhiệm vụ kiểm thử:**
   * Kiểm thử đặt tour thành công, đặt vượt số chỗ và số lượng vé không hợp lệ.
   * Kiểm thử xác nhận một phiếu hai lần.
   * Kiểm thử hủy phiếu đã xác nhận, phiếu chưa xác nhận và hủy hai lần.
   * Kiểm thử tính tổng tiền khi có hoặc không có dịch vụ.
-  * Tổng hợp kết quả kiểm thử của các thành viên thành bảng tối thiểu 10 trường hợp.
+  * Thu thập và tổng hợp kết quả kiểm thử bước đầu của các thành viên thành bảng tối thiểu 10 trường hợp tiêu biểu.
   * Bảng kiểm thử gồm chức năng, dữ liệu đầu vào, kết quả mong đợi, kết quả thực tế và trạng thái Pass/Fail.
+  * Lưu kết quả và minh chứng kiểm thử.
 
 * **Nội dung báo cáo phụ trách:**
 
@@ -342,7 +343,6 @@ Ví dụ: Giá tour 2.000.000 đồng/người, dịch vụ bổ sung 300.000 đ
   * Đưa ra ví dụ minh họa kết quả tính tiền.
   * Vẽ Flowchart chức năng tính tổng chi phí.
 
-
 ---
 
 #### 4. Nguyễn Hữu Phương Uyên
@@ -351,7 +351,6 @@ Ví dụ: Giá tour 2.000.000 đồng/người, dịch vụ bổ sung 300.000 đ
   * `controllers/tour_manager.py` (bổ sung).
   * `utils/file_helper.py` (bổ sung).
   * `config.py` (tạo mới).
-  * `main.py` (tạo mới).
 
 * **Chi tiết nhiệm vụ lập trình:**
 
@@ -381,7 +380,7 @@ Ví dụ: Giá tour 2.000.000 đồng/người, dịch vụ bổ sung 300.000 đ
 
 Ví dụ: Tìm các tour đi Đà Lạt có giá không vượt quá 3.000.000 đồng và khởi hành vào ngày được nhập.
 
-**c. Bổ sung chức năng quản lý phiếu đặt tour**
+**c. Bổ sung chức năng quản lý khách hàng, dịch vụ và phiếu đặt tour**
 
 * Bổ sung hoặc hoàn thiện thuộc tính `ds_phieu_dat` có kiểu List trong lớp `QuanLyTour` để quản lý các đối tượng `PhieuDatTour`.
 * Bổ sung các danh sách `ds_khach_hang`, `ds_dich_vu` và `ds_diem_den` để quản lý dữ liệu sử dụng khi lập phiếu đặt và xây dựng tour.
@@ -392,7 +391,6 @@ Ví dụ: Tìm các tour đi Đà Lạt có giá không vượt quá 3.000.000 �
 * Viết phương thức `tim_phieu_theo_khach(ma_khach)`: tìm danh sách phiếu đặt thuộc về một khách hàng.
 * Viết phương thức `xac_nhan_phieu_dat(ma_phieu)`: tìm phiếu theo mã và gọi phương thức `xac_nhan_dat()` trong `booking.py`.
 * Viết phương thức `huy_phieu_dat(ma_phieu)`: tìm phiếu theo mã và gọi phương thức `huy_dat()` trong `booking.py`.
-* Kiểm tra quyền thực hiện và quyền sở hữu phiếu khi tích hợp chức năng tài khoản.
 * Lưu dữ liệu sau khi thêm, xác nhận hoặc hủy phiếu đặt thành công.
 
 Không viết lại nghiệp vụ đặt chỗ, hủy chỗ và tính tiền đã được xây dựng trong `booking.py`.
@@ -403,7 +401,7 @@ Không viết lại nghiệp vụ đặt chỗ, hủy chỗ và tính tiền đ�
 * Không tính các phiếu Chờ xác nhận hoặc Đã hủy vào doanh thu.
 * Kiểm tra lại phương thức `thong_ke_ty_le_lap_day()` theo công thức:
 
-  `ty_le_lap_day = (so_cho_da_dat / so_cho_toi_da) * 100`
+  `ty_le_lap_day = (tong_so_cho_da_dat / tong_so_cho_toi_da) * 100`
 
 * Xử lý trường hợp số chỗ tối đa không hợp lệ để tránh lỗi chia cho 0.
 * Đảm bảo doanh thu và tỷ lệ lấp đầy thay đổi chính xác sau khi xác nhận hoặc hủy đặt tour.
@@ -449,28 +447,25 @@ Ví dụ: Tour có 20 chỗ, đã đặt 15 chỗ thì tỷ lệ lấp đầy l�
 * Kiểm tra lại hàm `xuat_bao_cao_csv()` để đảm bảo xuất đúng dữ liệu thống kê và hiển thị được tiếng Việt.
 * Cập nhật hàm `xuat_lich_trinh_text()` để xuất thông tin tour và nội dung lịch trình theo từng ngày.
 
-**g. Tích hợp chương trình**
+**g. Liên kết các module nghiệp vụ và kiểm thử bước đầu**
 
-* Tạo file `main.py` làm điểm khởi chạy chung của chương trình.
-* Import các lớp, module và hằng số đã được xây dựng.
-* Khởi tạo đối tượng quản lý và đọc dữ liệu JSON khi bắt đầu chạy chương trình.
-* Xây dựng menu Console đơn giản hoặc kịch bản chạy thử bằng vòng lặp `while`, câu lệnh `if...elif...else` và hàm `input()` nếu cần.
-* Gọi các phương thức đã xây dựng để chạy thử chức năng quản lý tour, tìm kiếm, lịch trình, đặt tour, hủy tour, thống kê và xuất báo cáo.
-* Tích hợp chức năng tài khoản, phân quyền và Crawl/API theo tiến độ thực tế.
-* Sử dụng `try...except` để xử lý trường hợp nhập sai kiểu dữ liệu hoặc lựa chọn không hợp lệ.
-* Phối hợp với các thành viên chuẩn bị dữ liệu mẫu gồm tour nội địa, tour quốc tế, lịch trình, khách hàng, dịch vụ và phiếu đặt tour.
-* Có thể sử dụng module `random` để hỗ trợ tạo dữ liệu kiểm thử hoặc lựa chọn điểm đến.
-* Cập nhật file `README.md` hướng dẫn chạy chương trình.
-* Chỉ sử dụng `main.py` để điều phối và gọi các chức năng đã xây dựng, không viết lại toàn bộ nghiệp vụ.
-* Chưa lập trình giao diện Tkinter trong giai đoạn này.
+* Liên kết các lớp Tour, KhachHang, DichVu, LichTrinhNgay và PhieuDatTour thông qua lớp QuanLyTour.
+* Sử dụng các hàm xử lý file trong `file_helper.py` để đọc, ghi, sao lưu và xuất dữ liệu.
+* Xây dựng các kịch bản kiểm thử trong `tour_manager.py` và `file_helper.py` thông qua `if __name__ == "__main__":`.
+* Chuẩn bị dữ liệu và file kiểm thử riêng, không làm ảnh hưởng đến dữ liệu chính thức.
+* Kiểm tra sự phối hợp giữa các module trong quá trình quản lý tour, khách hàng, dịch vụ, lịch trình, phiếu đặt, thống kê và lưu trữ dữ liệu.
+* Phối hợp với các thành viên xử lý lỗi khi liên kết các module nghiệp vụ.
+* Cập nhật hướng dẫn chạy kiểm thử trong `README.md`.
 
 * **Nhiệm vụ kiểm thử:**
   * Kiểm thử thêm tour trùng mã, cập nhật tour không hợp lệ và xóa tour đang có phiếu đặt.
   * Kiểm thử tìm kiếm theo điểm đến, mức giá và ngày khởi hành.
-  * Kiểm thử quản lý phiếu đặt, thống kê doanh thu và tỷ lệ lấp đầy.
+  * Kiểm thử quản lý khách hàng, dịch vụ và phiếu đặt.
+  * Kiểm thử thống kê doanh thu và tỷ lệ lấp đầy.
   * Kiểm thử đọc, ghi JSON và xuất file CSV, TXT.
-  * Tắt và khởi động lại chương trình để kiểm tra dữ liệu được lưu và khôi phục chính xác.
-  * Phối hợp với các thành viên kiểm thử tích hợp toàn bộ hệ thống.
+  * Kiểm thử khả năng sao lưu và bảo toàn dữ liệu khi xảy ra lỗi.
+  * Kiểm thử lưu và khôi phục dữ liệu JSON bằng cách khởi tạo lại đối tượng quản lý.
+  * Phối hợp với các thành viên kiểm thử tích hợp bước đầu giữa các module nghiệp vụ.
   * Gửi kết quả kiểm thử cho Đỗ Yến Nhi tổng hợp.
 
 * **Nội dung báo cáo phụ trách:**
@@ -479,7 +474,7 @@ Ví dụ: Tour có 20 chỗ, đã đặt 15 chỗ thì tỷ lệ lấp đầy l�
 
 * **Mục 1.1. Nhóm thực hiện:**
   * Mục 1.1.1. Thông tin thành viên nhóm: lập bảng họ tên, mã sinh viên và lớp của từng thành viên.
-  * Mục 1.1.2. Phân công nhiệm vụ: trình bày bảng phân công giai đoạn 1, giai đoạn 2 và tỷ lệ đóng góp.
+  * Mục 1.1.2. Phân công nhiệm vụ: trình bày bảng tổng hợp nhiệm vụ lập trình, nội dung báo cáo và tỷ lệ đóng góp dự kiến của từng thành viên.
 
 * **Mục 2.3.1. Thêm mới tour:**
   * Mô tả quá trình nhập thông tin tour, kiểm tra dữ liệu, kiểm tra trùng mã, thêm vào danh sách và lưu JSON.
@@ -514,6 +509,15 @@ Ví dụ: Tour có 20 chỗ, đã đặt 15 chỗ thì tỷ lệ lấp đầy l�
   * Giải thích cách chuyển đổi đối tượng thành Dictionary và khôi phục đối tượng từ JSON.
   * Trình bày cách xử lý lỗi khi đọc và ghi file.
   * Phối hợp với thành viên phụ trách tài khoản để mô tả chính xác cấu trúc `users.json`.
+
+---
+
+### 3. Nhiệm vụ chung của các thành viên
+
+* Thống nhất cấu trúc dữ liệu, tên thuộc tính, phương thức và các hằng số dùng chung.
+* Phối hợp liên kết các module nghiệp vụ, kiểm thử bước đầu và sửa lỗi trong phần mã nguồn được phân công.
+* Cập nhật mã nguồn lên GitHub và gửi kết quả kiểm thử cho thành viên phụ trách tổng hợp.
+* Hoàn thành nội dung báo cáo tiến độ tuần 10 theo phân công.
 
 
 
