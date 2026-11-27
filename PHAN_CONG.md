@@ -215,6 +215,9 @@ Phân chia chức năng theo hai vai trò:
 | Thống kê doanh thu và tỷ lệ lấp đầy | Có | Không |
 | Xuất báo cáo | Có | Không |
 | Đổi mật khẩu cá nhân | Có | Có |
+| Quản lý khách hàng | Có | Không |
+| Quản lý dịch vụ bổ sung | Có | Không |
+| Tra cứu điểm đến qua API | Có | Có |
 
 * Tài khoản đăng ký mới mặc định có vai trò User, không cho phép người dùng tự cấp quyền Admin.
 * Chuẩn bị tài khoản Admin mẫu để kiểm thử.
